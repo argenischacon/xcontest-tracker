@@ -187,7 +187,7 @@
                 });
                 
                 // Set deadline to end of day
-                const deadlineDate = new Date(deadlineInput.value);
+                const deadlineDate = new Date(deadlineInput.value + 'T00:00:00');
                 deadlineDate.setHours(23, 59, 59, 999);
                 
                 const contest = {
@@ -249,17 +249,22 @@
                     const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const totalHours = (days * 24) + hours;
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
                     
                     if (days === 0) {
-                        timeLeftText = hours > 1 ? `Ends in ${hours}h` : 'Ends soon';
+                        if (hours > 0) {
+                            timeLeftText = `Ends in ${hours}h`;
+                            hoursLeftText = `${hours} hour${hours !== 1 ? 's' : ''} left`;
+                        } else {
+                            timeLeftText = 'Ends soon';
+                            hoursLeftText = `${minutes} minute${minutes !== 1 ? 's' : ''} left`;
+                        }
                         timeLeftClass = 'countdown-soon';
-                        hoursLeftText = `${hours} hour${hours !== 1 ? 's' : ''} left`;
                         hoursLeftClass = 'soon';
                     } else if (days < 3) {
                         timeLeftText = `Ends in ${days}d`;
                         timeLeftClass = 'countdown-soon';
-                        hoursLeftText = `${totalHours} hour${totalHours !== 1 ? 's' : ''} left`;
-                        hoursLeftClass = 'soon';
+                        hoursLeftText = `${totalHours} total hour${totalHours !== 1 ? 's' : ''} left`;
                     } else if (days < 7) {
                         timeLeftText = `Ends in ${days}d`;
                         timeLeftClass = 'countdown-normal';
