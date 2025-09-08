@@ -117,6 +117,69 @@
         </div>
     </div>
 
+    <!-- Modal for editing contest -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Edit Contest</h2>
+            <form id="edit-contest-form">
+                <input type="hidden" id="edit-contest-id">
+                <div class="form-group">
+                    <label for="edit-post-url">Contest URL (X/Twitter Post)</label>
+                    <input type="url" id="edit-post-url" placeholder="https://x.com/..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-title">Contest Title</label>
+                    <input type="text" id="edit-title" placeholder="e.g., Fantasy Character Contest" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-description">Description / Rules</label>
+                    <textarea id="edit-description" rows="5" placeholder="Enter contest rules or description"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-deadline">Deadline</label>
+                    <input type="date" id="edit-deadline" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Thumbnail Image</label>
+                    <div class="image-upload">
+                        <div class="image-upload-preview" id="edit-image-preview">
+                            <span>
+                                <i class="upload-icon fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload or drag and drop</p>
+                                <p class="drag-feedback">Drop the image!</p>
+                            </span>
+                        </div>
+                        <input type="file" id="edit-image-upload" accept="image/*">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Prize Structure</label>
+                    <div class="radio-group">
+                        <input type="radio" id="edit-individual" name="edit-prize-type" value="individual" checked>
+                        <label for="edit-individual">Individual Prizes</label>
+                        <input type="radio" id="edit-pool" name="edit-prize-type" value="pool">
+                        <label for="edit-pool">Prize Pool</label>
+                    </div>
+                </div>
+                
+                <div id="edit-prizes-container"></div>
+                <button type="button" id="edit-add-prize" class="btn btn-secondary" style="margin-top: 0.5rem; padding: 0.5rem;">
+                    <i class="fas fa-plus"></i> Add Prize
+                </button>
+                
+                <button type="submit" class="btn btn-block">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
     <footer class="footer">
         <p>Built with <i class="fas fa-heart"></i> for artists.</p>
     </footer>

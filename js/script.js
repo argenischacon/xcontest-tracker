@@ -1,4 +1,4 @@
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
             // DOM References
             const contestForm = document.getElementById('contest-form');
             const postUrlInput = document.getElementById('post-url');
@@ -17,9 +17,25 @@
             const modal = document.getElementById('add-modal');
             const closeModal = document.querySelector('.close-modal');
             const prizeRadios = document.querySelectorAll('input[name="prize-type"]');
+
+            // Edit Modal DOM References
+            const editModal = document.getElementById('edit-modal');
+            const editContestForm = document.getElementById('edit-contest-form');
+            const editContestIdInput = document.getElementById('edit-contest-id');
+            const editPostUrlInput = document.getElementById('edit-post-url');
+            const editTitleInput = document.getElementById('edit-title');
+            const editDescriptionInput = document.getElementById('edit-description');
+            const editDeadlineInput = document.getElementById('edit-deadline');
+            const editPrizesContainer = document.getElementById('edit-prizes-container');
+            const editAddPrizeBtn = document.getElementById('edit-add-prize');
+            const editImageUpload = document.getElementById('edit-image-upload');
+            const editImagePreview = document.getElementById('edit-image-preview');
+            const editPrizeRadios = document.querySelectorAll('input[name="edit-prize-type"]');
+            const editCloseModal = editModal.querySelector('.close-modal');
             
             // Variables
             let uploadedImage = null;
+            let editUploadedImage = null;
             let currentSort = 'deadline';
             let contests = JSON.parse(localStorage.getItem('artContests')) || [];
             sortContests('deadline');
@@ -38,11 +54,14 @@
             renderContests();
             setMinDate();
             initImageUpload();
+            initEditImageUpload();
             handlePrizeTypeChange(); // Initial setup for prizes
             
             // Event Listeners
             contestForm.addEventListener('submit', handleFormSubmit);
+            editContestForm.addEventListener('submit', handleEditFormSubmit);
             addPrizeBtn.addEventListener('click', addPrizeField);
+            editAddPrizeBtn.addEventListener('click', addEditPrizeField);
             sortSelect.addEventListener('change', handleSort);
             themeToggle.addEventListener('change', toggleTheme);
             addContestBtn.addEventListener('click', () => modal.style.display = 'block');
@@ -54,8 +73,13 @@
                 }
             });
             closeModal.addEventListener('click', closeModalFunc);
-            window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
+            editCloseModal.addEventListener('click', closeEditModalFunc);
+            window.addEventListener('click', (e) => { 
+                if (e.target === modal) closeModalFunc();
+                if (e.target === editModal) closeEditModalFunc();
+            });
             prizeRadios.forEach(radio => radio.addEventListener('change', handlePrizeTypeChange));
+            editPrizeRadios.forEach(radio => radio.addEventListener('change', handleEditPrizeTypeChange));
             
             function toggleTheme() {
                 document.body.classList.toggle('dark-mode');
@@ -74,6 +98,19 @@
                     </span>
                 `;
                 handlePrizeTypeChange();
+            }
+
+            function closeEditModalFunc() {
+                editModal.style.display = 'none';
+                editContestForm.reset();
+                editUploadedImage = null;
+                editImagePreview.innerHTML = `
+                    <span>
+                        <i class="upload-icon fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload or drag and drop</p>
+                        <p class="drag-feedback">Drop the image!</p>
+                    </span>
+                `;
             }
             
             function initImageUpload() {
@@ -95,6 +132,26 @@
                     if (file) handleImageUpload(file);
                 });
             }
+
+            function initEditImageUpload() {
+                editImagePreview.addEventListener('click', () => editImageUpload.click());
+                editImageUpload.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) handleEditImageUpload(file);
+                });
+
+                editImagePreview.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    editImagePreview.classList.add('dragover');
+                });
+                editImagePreview.addEventListener('dragleave', () => editImagePreview.classList.remove('dragover'));
+                imagePreview.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    editImagePreview.classList.remove('dragover');
+                    const file = e.dataTransfer.files[0];
+                    if (file) handleEditImageUpload(file);
+                });
+            }
             
             function handleImageUpload(file) {
                 if (!file || !file.type.match('image.*')) {
@@ -108,6 +165,19 @@
                 };
                 reader.readAsDataURL(file);
             }
+
+            function handleEditImageUpload(file) {
+                if (!file || !file.type.match('image.*')) {
+                    alert('Please select a valid image file');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    editUploadedImage = event.target.result;
+                    editImagePreview.innerHTML = `<img src="${editUploadedImage}" alt="Preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
             
             function setMinDate() {
                 const now = new Date();
@@ -116,6 +186,7 @@
                 const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
                 const day = String(tomorrow.getDate()).padStart(2, '0');
                 deadlineInput.min = `${year}-${month}-${day}`;
+                editDeadlineInput.min = `${year}-${month}-${day}`;
             }
             
             function addPrizeField() {
@@ -126,6 +197,16 @@
                     <input type="number" class="prize-amount" placeholder="Amount (USD)" min="0" step="any">
                 `;
                 prizesContainer.appendChild(prizeEntry);
+            }
+
+            function addEditPrizeField(place = '', amount = '') {
+                const prizeEntry = document.createElement('div');
+                prizeEntry.className = 'prize-entry';
+                prizeEntry.innerHTML = `
+                    <input type="text" class="prize-place" placeholder="e.g., 1st Place" value="${place}">
+                    <input type="number" class="prize-amount" placeholder="Amount (USD)" min="0" step="any" value="${amount}">
+                `;
+                editPrizesContainer.appendChild(prizeEntry);
             }
             
             function handlePrizeTypeChange() {
@@ -143,6 +224,24 @@
                     `;
                     prizesContainer.appendChild(prizeEntry);
                     addPrizeBtn.style.display = 'none';
+                }
+            }
+
+            function handleEditPrizeTypeChange() {
+                const type = document.querySelector('input[name="edit-prize-type"]:checked').value;
+                editPrizesContainer.innerHTML = '';
+                if (type === 'individual') {
+                    addEditPrizeField();
+                    editAddPrizeBtn.style.display = 'block';
+                } else {
+                    const prizeEntry = document.createElement('div');
+                    prizeEntry.className = 'prize-entry';
+                    prizeEntry.innerHTML = `
+                        <input type="text" class="prize-place" value="Prize Pool" readonly>
+                        <input type="number" class="prize-amount" placeholder="Total Amount (USD)" min="0" step="any">
+                    `;
+                    editPrizesContainer.appendChild(prizeEntry);
+                    editAddPrizeBtn.style.display = 'none';
                 }
             }
             
@@ -205,6 +304,50 @@
                 renderContests();
                 closeModalFunc();
             }
+
+            function handleEditFormSubmit(e) {
+                e.preventDefault();
+                const contestId = parseInt(editContestIdInput.value);
+                const url = editPostUrlInput.value.trim();
+                if (!isValidTwitterUrl(url)) {
+                    alert('Please enter a valid X/Twitter URL');
+                    return;
+                }
+                
+                const prizes = [];
+                const prizeEntries = editPrizesContainer.querySelectorAll('.prize-entry');
+                prizeEntries.forEach(entry => {
+                    const place = entry.querySelector('.prize-place').value.trim();
+                    const amountStr = entry.querySelector('.prize-amount').value.trim();
+                    if (place && amountStr) {
+                        const amount = parseFloat(amountStr);
+                        if (!isNaN(amount)) {
+                            prizes.push({ place, amount });
+                        }
+                    }
+                });
+
+                const deadlineDate = new Date(editDeadlineInput.value + 'T00:00:00');
+                deadlineDate.setHours(23, 59, 59, 999);
+
+                const contestIndex = contests.findIndex(c => c.id === contestId);
+                if (contestIndex > -1) {
+                    contests[contestIndex] = {
+                        ...contests[contestIndex],
+                        url,
+                        title: editTitleInput.value.trim(),
+                        description: editDescriptionInput.value.trim(),
+                        deadline: deadlineDate.getTime(),
+                        prizes,
+                        image: editUploadedImage || contests[contestIndex].image
+                    };
+                }
+                
+                sortContests(currentSort);
+                saveContests();
+                renderContests();
+                closeEditModalFunc();
+            }
             
             function isValidTwitterUrl(url) {
                 const pattern = /^https?:\/\/(twitter\.com|x\.com)\/.+\/status\/\d+/;
@@ -231,6 +374,45 @@
                     const card = createContestCard(contest);
                     contestGrid.appendChild(card);
                 });
+            }
+
+            function openEditModal(id) {
+                const contest = contests.find(c => c.id === id);
+                if (!contest) return;
+
+                editContestIdInput.value = contest.id;
+                editPostUrlInput.value = contest.url;
+                editTitleInput.value = contest.title;
+                editDescriptionInput.value = contest.description;
+                
+                const deadline = new Date(contest.deadline);
+                const year = deadline.getFullYear();
+                const month = String(deadline.getMonth() + 1).padStart(2, '0');
+                const day = String(deadline.getDate()).padStart(2, '0');
+                editDeadlineInput.value = `${year}-${month}-${day}`;
+
+                editImagePreview.innerHTML = `<img src="${contest.image}" alt="Preview">`;
+                editUploadedImage = contest.image;
+
+                editPrizesContainer.innerHTML = '';
+                const prizeType = contest.prizes.length > 1 || (contest.prizes.length === 1 && contest.prizes[0].place !== 'Prize Pool') ? 'individual' : 'pool';
+                document.querySelector(`input[name="edit-prize-type"][value="${prizeType}"]`).checked = true;
+                
+                if (prizeType === 'individual') {
+                    contest.prizes.forEach(p => addEditPrizeField(p.place, p.amount));
+                    editAddPrizeBtn.style.display = 'block';
+                } else {
+                    const prize = contest.prizes[0] || { amount: '' };
+                    editPrizesContainer.innerHTML = `
+                        <div class="prize-entry">
+                            <input type="text" class="prize-place" value="Prize Pool" readonly>
+                            <input type="number" class="prize-amount" placeholder="Total Amount (USD)" min="0" step="any" value="${prize.amount}">
+                        </div>
+                    `;
+                    editAddPrizeBtn.style.display = 'none';
+                }
+
+                editModal.style.display = 'block';
             }
             
             function createContestCard(contest) {
@@ -310,6 +492,9 @@
                             <a href="${contest.url}" target="_blank" class="card-link">
                                 <i class="fas fa-external-link-alt"></i> View Contest
                             </a>
+                            <button class="edit-btn" data-id="${contest.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
                             <button class="delete-btn" data-id="${contest.id}">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -323,6 +508,10 @@
                         saveContests();
                         renderContests();
                     }
+                });
+
+                card.querySelector('.edit-btn').addEventListener('click', () => {
+                    openEditModal(contest.id);
                 });
                 
                 return card;
