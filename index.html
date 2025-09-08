@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XContest Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body class="dark-mode">
+    <header>
+        <div class="container">
+            <h1><span class="logo">✕</span> XContest Tracker</h1>
+            <p>All your tracked art contests in one place.</p>
+            
+            <div class="theme-switch">
+                <span><i class="fas fa-sun"></i></span>
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+                <span><i class="fas fa-moon"></i></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <section class="contests-section">
+                <div class="section-header">
+                    <h2>Your Contests</h2>
+                    <div class="sort-options">
+                        <select id="sort-select">
+                            <option value="deadline">Sort by Deadline</option>
+                            <option value="title">Sort by Title</option>
+                            <option value="prize">Sort by Prize</option>
+                        </select>
+                        <button id="add-contest-btn" class="btn"><i class="fas fa-plus"></i> Add Contest</button>
+                    </div>
+                </div>
+                
+                <div id="contest-grid" class="contest-grid">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No contests tracked yet</h3>
+                        <p>Add some contests to get started</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal for adding contest -->
+    <div id="add-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Add New Contest</h2>
+            <form id="contest-form">
+                <div class="form-group">
+                    <label for="post-url">Contest URL (X/Twitter Post)</label>
+                    <input type="url" id="post-url" placeholder="https://x.com/..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="title">Contest Title</label>
+                    <input type="text" id="title" placeholder="e.g., Fantasy Character Contest" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description / Rules</label>
+                    <textarea id="description" rows="5" placeholder="Enter contest rules or description"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="deadline">Deadline</label>
+                    <input type="date" id="deadline" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Thumbnail Image</label>
+                    <div class="image-upload">
+                        <div class="image-upload-preview" id="image-preview">
+                            <span>
+                                <i class="upload-icon fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload or drag and drop</p>
+                                <p class="drag-feedback">Drop the image!</p>
+                            </span>
+                        </div>
+                        <input type="file" id="image-upload" accept="image/*">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Prize Structure</label>
+                    <div class="radio-group">
+                        <input type="radio" id="individual" name="prize-type" value="individual" checked>
+                        <label for="individual">Individual Prizes</label>
+                        <input type="radio" id="pool" name="prize-type" value="pool">
+                        <label for="pool">Prize Pool</label>
+                    </div>
+                </div>
+                
+                <div id="prizes-container"></div>
+                <button type="button" id="add-prize" class="btn btn-secondary" style="margin-top: 0.5rem; padding: 0.5rem;">
+                    <i class="fas fa-plus"></i> Add Prize
+                </button>
+                
+                <button type="submit" class="btn btn-block">
+                    <i class="fas fa-save"></i> Add Contest
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Built with <i class="fas fa-heart"></i> for artists.</p>
+    </footer>
+    <script src="js/script.js"></script>
+</body>
+</html>
