@@ -13,6 +13,7 @@
             const imagePreview = document.getElementById('image-preview');
             const themeToggle = document.getElementById('theme-toggle');
             const addContestBtn = document.getElementById('add-contest-btn');
+            const clearAllBtn = document.getElementById('clear-all-btn');
             const modal = document.getElementById('add-modal');
             const closeModal = document.querySelector('.close-modal');
             const prizeRadios = document.querySelectorAll('input[name="prize-type"]');
@@ -45,6 +46,13 @@
             sortSelect.addEventListener('change', handleSort);
             themeToggle.addEventListener('change', toggleTheme);
             addContestBtn.addEventListener('click', () => modal.style.display = 'block');
+            clearAllBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to delete all contests? This action cannot be undone.')) {
+                    contests = [];
+                    saveContests();
+                    renderContests();
+                }
+            });
             closeModal.addEventListener('click', closeModalFunc);
             window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
             prizeRadios.forEach(radio => radio.addEventListener('change', handlePrizeTypeChange));

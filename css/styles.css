@@ -273,6 +273,14 @@
        background: var(--gray-500);
    }
 
+   .btn-danger {
+       background: var(--danger);
+   }
+
+   .btn-danger:hover {
+       background: #c82333; /* A darker red */
+   }
+
    .btn-block {
        display: block;
        width: 100%;
