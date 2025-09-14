@@ -33,14 +33,22 @@
             <section class="contests-section">
                 <div class="section-header">
                     <h2>Your Contests</h2>
-                    <div class="sort-options">
-                        <select id="sort-select">
-                            <option value="deadline">Sort by Deadline</option>
-                            <option value="title">Sort by Title</option>
-                            <option value="prize">Sort by Prize</option>
-                        </select>
-                        <button id="clear-all-btn" class="btn btn-danger"><i class="fas fa-trash"></i> Clear All</button>
-                        <button id="add-contest-btn" class="btn"><i class="fas fa-plus"></i> Add Contest</button>
+                    <div class="toolbar-options">
+                        <div class="sort-options">
+                            <label for="sort-select">Sort by:</label>
+                            <select id="sort-select">
+                                <option value="deadline">Deadline</option>
+                                <option value="title">Title</option>
+                                <option value="prize">Prize</option>
+                            </select>
+                        </div>
+                        <div class="filter-options">
+                            <button id="filter-highlighted-btn" class="btn btn-filter"><i class="far fa-star"></i><span class="btn-text">Show Highlighted</span></button>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="clear-all-btn" class="btn btn-danger"><i class="fas fa-trash"></i> Clear All</button>
+                            <button id="add-contest-btn" class="btn"><i class="fas fa-plus"></i> Add Contest</button>
+                        </div>
                     </div>
                 </div>
                 

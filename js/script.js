@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const modal = document.getElementById('add-modal');
             const closeModal = document.querySelector('.close-modal');
             const prizeRadios = document.querySelectorAll('input[name="prize-type"]');
+            const filterHighlightedBtn = document.getElementById('filter-highlighted-btn');
 
             // Edit Modal DOM References
             const editModal = document.getElementById('edit-modal');
@@ -38,6 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
             let editUploadedImage = null;
             let currentSort = 'deadline';
             let contests = JSON.parse(localStorage.getItem('artContests')) || [];
+            let highlightedContests = JSON.parse(localStorage.getItem('highlightedContests')) || [];
+            let showHighlighted = false;
             sortContests('deadline');
             
             // Default to dark mode if not set
@@ -80,7 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             prizeRadios.forEach(radio => radio.addEventListener('change', handlePrizeTypeChange));
             editPrizeRadios.forEach(radio => radio.addEventListener('change', handleEditPrizeTypeChange));
-            
+            filterHighlightedBtn.addEventListener('click', toggleFilterHighlighted);
+
             function toggleTheme() {
                 document.body.classList.toggle('dark-mode');
                 localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
@@ -357,20 +361,26 @@ document.addEventListener('DOMContentLoaded', function() {
             function saveContests() {
                 localStorage.setItem('artContests', JSON.stringify(contests));
             }
+
+            function saveHighlightedContests() {
+                localStorage.setItem('highlightedContests', JSON.stringify(highlightedContests));
+            }
             
             function renderContests() {
                 contestGrid.innerHTML = '';
-                if (contests.length === 0) {
+                const contestsToRender = showHighlighted ? contests.filter(c => highlightedContests.includes(c.id)) : contests;
+
+                if (contestsToRender.length === 0) {
                     contestGrid.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-clipboard-list"></i>
-                            <h3>No contests tracked yet</h3>
-                            <p>Add some contests to get started</p>
+                            <h3>No contests to display</h3>
+                            <p>${showHighlighted ? 'No highlighted contests found.' : 'Add some contests to get started'}</p>
                         </div>
                     `;
                     return;
                 }
-                contests.forEach(contest => {
+                contestsToRender.forEach(contest => {
                     const card = createContestCard(contest);
                     contestGrid.appendChild(card);
                 });
@@ -418,6 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
             function createContestCard(contest) {
                 const now = Date.now();
                 const timeLeft = contest.deadline - now;
+                const isHighlighted = highlightedContests.includes(contest.id);
                 
                 let timeLeftText = '';
                 let timeLeftClass = '';
@@ -472,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 const card = document.createElement('div');
-                card.className = 'contest-card';
+                card.className = `contest-card ${isHighlighted ? 'highlighted' : ''}`;
                 card.innerHTML = `
                     <div class="card-description">${contest.description ? contest.description.split('\n').join('<br>') : ''}</div>
                     <div class="card-image">
@@ -492,6 +503,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             <a href="${contest.url}" target="_blank" class="card-link">
                                 <i class="fas fa-external-link-alt"></i> View Contest
                             </a>
+                            <button class="highlight-btn ${isHighlighted ? 'highlighted' : ''}" data-id="${contest.id}">
+                                <i class="${isHighlighted ? 'fas' : 'far'} fa-star"></i>
+                            </button>
                             <button class="edit-btn" data-id="${contest.id}">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -513,8 +527,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 card.querySelector('.edit-btn').addEventListener('click', () => {
                     openEditModal(contest.id);
                 });
+
+                card.querySelector('.highlight-btn').addEventListener('click', (e) => {
+                    const id = parseInt(e.currentTarget.dataset.id);
+                    toggleHighlight(id);
+                });
                 
                 return card;
+            }
+
+            function toggleHighlight(id) {
+                const index = highlightedContests.indexOf(id);
+                if (index > -1) {
+                    highlightedContests.splice(index, 1);
+                } else {
+                    highlightedContests.push(id);
+                }
+                saveHighlightedContests();
+                renderContests();
+            }
+
+            function toggleFilterHighlighted() {
+                showHighlighted = !showHighlighted;
+                filterHighlightedBtn.classList.toggle('active');
+                const btnText = filterHighlightedBtn.querySelector('.btn-text');
+                if (showHighlighted) {
+                    btnText.textContent = 'Show All';
+                } else {
+                    btnText.textContent = 'Show Highlighted';
+                }
+                renderContests();
             }
             
             function handleSort() {
