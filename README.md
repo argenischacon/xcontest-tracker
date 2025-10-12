@@ -1,5 +1,14 @@
 # XContest Tracker
 
+[![HTML5](https://img.shields.io/badge/HTML-5-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS-3-1572B6?style=flat-square&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?style=flat-square&logo=javascript&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Font Awesome](https://img.shields.io/badge/Font_Awesome-5-339AF0?style=flat-square&logo=font-awesome&logoColor=white)](https://fontawesome.com/)
+[![LocalStorage](https://img.shields.io/badge/LocalStorage-Web%20API-000000?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+
+![Image](images/xcontest-tracker-screenshot.png)
+
 Una aplicación web moderna para gestionar y hacer seguimiento a concursos de arte. Permite agregar, organizar y monitorear concursos con fechas límite, premios e imágenes.
 
 ## 🎨 Características
@@ -38,8 +47,11 @@ xcontest-tracker/
 
 ## 🛠️ Instalación y Uso
 
+### Prerrequisitos
+- Un navegador web moderno (Chrome, Firefox, etc.)
+
 1. **Clona el repositorio**:
-   ```bash
+   ```bash:disable-run
    git clone https://github.com/tu-usuario/xcontest-tracker.git
    cd xcontest-tracker
    ```
@@ -75,6 +87,25 @@ xcontest-tracker/
 - Diseño responsivo
 - Interfaz intuitiva y moderna
 
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 👨‍💻 Autor
+
+**Argenis Chacon B.**
+
+[![LinkedIn](https://img.shields.io/badge/Linkedin-argenischaconb-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/argenischaconb/)
+[![GitHub](https://img.shields.io/badge/GitHub-@argenischacon-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/argenischacon)
+
+---
+
+⭐ Si este proyecto te resultó útil, ¡dale una estrella!
